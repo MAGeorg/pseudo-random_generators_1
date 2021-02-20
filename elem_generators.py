@@ -49,17 +49,16 @@ class CongruentGenerator:
                 fl.write('%i\n' % el)
 
     def generate_sequence(self, x_0, c_0, a, N, cnt):
-        print(x_0,c_0,a,N, cnt)
+        # print(x_0,c_0,a,N, cnt)
         seq = [x_0]
-        # print(st)
         st = time.time_ns()
         for i in range(cnt - 1):
             x_0 = (a * x_0 + c_0) % N
             c_0 = int((a * x_0 + c_0) / N)
             seq.append(x_0)
         end = time.time_ns()
-        print(st, '\n', end)
-        print("Generator running time (in nsec): {}".format(round((end - st)/1000000), 12))
+        # print(st,'\n', end)
+        print("Generator running time (in nsec): {}".format(end - st))
         self.__print_seq_to_file(seq)
 
 
@@ -136,29 +135,11 @@ def start_get_param():
         sys.exit()
 
 
-
-
-# генерация параметров тестовый
-def generate_param():
-    q_list = [8, 16, 32]#, 64]
-    q = random.choice(q_list)
-    N = 2 ** q
-    x0 = random.randint(100, 5000)
-    c0 = random.randint(1000, 10000)
-    for a in range(10000):
-        pass
-        # if is_prime(a * N - 1) and is_prime((a * N - 2)/2):
-        #     return x0, c0, a, N
-    else:
-        raise
-
-
 if __name__ == "__main__":
     cong_obg = start_get_param()
     cong_obg.generate_sequence(cong_obg.x_0, cong_obg.c_0, cong_obg.a, cong_obg.N, cong_obg.cnt)
 
     print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
     print(cong_obg.x_0, cong_obg.c_0, cong_obg.a, cong_obg.N, cong_obg.cnt)
-    # print(generate_param())
 
 
