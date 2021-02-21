@@ -37,11 +37,16 @@ class CongruentGenerator:
         c0 = random.randint(1000, 10000)
         N = 2 ** q
         for a in range(10000):
-            if is_prime(a * N - 1) and is_prime((a * N - 2)/2):
+            if self.__is_prime(a * N - 1) and self.__is_prime((a * N - 2)/2):
                 print("Parameter generation time  (in sec): {}".format(time.time() - st))
                 return c0, a, N
         else:
             raise
+
+    # проверка на простоту
+    def __is_prime(self, n):
+        return n > 1 and all(n % i for i in islice(count(2), int(sqrt(n) - 1)))
+
 
     def __print_seq_to_file(self, seq: list):
         with open('result_con.txt', 'w') as fl:
@@ -100,11 +105,6 @@ class FibonacciGenerator:
                 fl.write('%i\n' % el)
 
 
-# проверка на простоту
-def is_prime(n):
-    return n > 1 and all(n % i for i in islice(count(2), int(sqrt(n) - 1)))
-
-
 # получение параметров
 def get_param(choice: int):
     print("Choose where to set parameters (initial state, sequence length):\n\t1. File\n\t2. Manually")
@@ -151,12 +151,11 @@ def start_get_param():
             cong_obj = CongruentGenerator(init_state, cnt=len_sequence)
             cong_obj.generate_sequence(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
 
-            print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
-            print(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
+            # print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
+            # print(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
         else:
             fib_obj = FibonacciGenerator(init_state, cnt=len_sequence)
             fib_obj.generate_sequence(fib_obj.x, fib_obj.r, fib_obj.s, fib_obj.cnt)
-            # pass  # автоматическая генерация для генератора Фибоначи
     elif param == 2:
         if choice == 1:
             print("Enter parameters: ")
@@ -166,8 +165,8 @@ def start_get_param():
             cong_obj = CongruentGenerator(init_state, c0, a, N, len_sequence)
             cong_obj.generate_sequence(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
 
-            print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
-            print(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
+            # print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
+            # print(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
         else:
             print("Enter parameters: ")
             s = int(input("Enter s << "))
