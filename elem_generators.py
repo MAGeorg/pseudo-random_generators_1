@@ -37,14 +37,19 @@ class CongruentGenerator:
         c0 = random.randint(1000, 10000)
         N = 2 ** q
         for a in range(10000):
-            if is_prime(a * N - 1) and is_prime((a * N - 2)/2):
+            if self.__is_prime(a * N - 1) and self.__is_prime((a * N - 2)/2):
                 print("Parameter generation time  (in sec): {}".format(time.time() - st))
                 return c0, a, N
         else:
             raise
 
+    # проверка на простоту
+    def __is_prime(self, n):
+        return n > 1 and all(n % i for i in islice(count(2), int(sqrt(n) - 1)))
+
+
     def __print_seq_to_file(self, seq: list):
-        with open('result.txt', 'w') as fl:
+        with open('result_con.txt', 'w') as fl:
             for el in seq:
                 fl.write('%i\n' % el)
 
@@ -63,13 +68,41 @@ class CongruentGenerator:
 
 
 class FibonacciGenerator:
-    def __init__(self):
-        pass
+    def __init__(self, x, s=None, cnt=128):
+        self.x = x
+        self.cnt = cnt
+        self.r = len(x)
+        self.s = int()
+        if s == None:
+            self.s = random.randint(1, self.r - 1)
+        else:
+            self.s = s
+        print("------------------------------------------------------")
+        print("--------------- Generator parameters -----------------")
+        print("\tx = {}\n\tr = {}\n\ts = {}\n\tcnt = {}".format(self.x, self.r, self.s, self.cnt))
+        print("------------------------------------------------------\n")
+        for xx in self.x:
+            if xx % 2 == 0:
+                print("There are even numbers in the sequence, fix that ... ")
+                exit()
+
+    def generate_sequence(self, x: list, r: int, s: int, cnt: int):
+        st = time.time_ns()
+        for t in range(r, cnt):
+            x_t = x[t - r] * x[t - s]
+            # print(t, "\t", x_t, "\n")
+            x.append(x_t)
+            if t % 10 == 0:
+                print(t)
+        end = time.time_ns()
+        print("Generator running time (in nsec): {}".format(end - st))
+        self.__print_seq_to_file(x)
 
 
-# проверка на простоту
-def is_prime(n):
-    return n > 1 and all(n % i for i in islice(count(2), int(sqrt(n) - 1)))
+    def __print_seq_to_file(self, seq: list):
+        with open('result_fib.txt', 'w') as fl:
+            for el in seq:
+                fl.write('%i\n' % el)
 
 
 # получение параметров
@@ -116,30 +149,33 @@ def start_get_param():
         #  автоматическая генерация в зависимости от генератора
         if choice == 1:
             cong_obj = CongruentGenerator(init_state, cnt=len_sequence)
-            return cong_obj
+            cong_obj.generate_sequence(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
+
+            # print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
+            # print(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
         else:
-            pass  # автоматическая генерация для генератора Фибоначи
+            fib_obj = FibonacciGenerator(init_state, cnt=len_sequence)
+            fib_obj.generate_sequence(fib_obj.x, fib_obj.r, fib_obj.s, fib_obj.cnt)
     elif param == 2:
         if choice == 1:
             print("Enter parameters: ")
             c0 = int(input("Enter c0 << "))
             a = int(input("Enter a << "))
             N = int(input("Enter N << "))
-            cong_obg = CongruentGenerator(init_state, c0, a, N, len_sequence)
-            return cong_obg
+            cong_obj = CongruentGenerator(init_state, c0, a, N, len_sequence)
+            cong_obj.generate_sequence(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
+
+            # print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
+            # print(cong_obj.x_0, cong_obj.c_0, cong_obj.a, cong_obj.N, cong_obj.cnt)
         else:
-            # считывание параметров для генератора фибоначи и инициализация объекта
-            pass
+            print("Enter parameters: ")
+            s = int(input("Enter s << "))
+            fib_obj = FibonacciGenerator(init_state, s, len_sequence)
+            fib_obj.generate_sequence(fib_obj.x, fib_obj.r, fib_obj.s, fib_obj.cnt)
     else:
         print("[!] Error input parameters for generators, try again ...")
         sys.exit()
 
 
 if __name__ == "__main__":
-    cong_obg = start_get_param()
-    cong_obg.generate_sequence(cong_obg.x_0, cong_obg.c_0, cong_obg.a, cong_obg.N, cong_obg.cnt)
-
-    print("\n\nПараметры что были считаны: x0, c0, a, N, cnt")
-    print(cong_obg.x_0, cong_obg.c_0, cong_obg.a, cong_obg.N, cong_obg.cnt)
-
-
+    start_get_param()
