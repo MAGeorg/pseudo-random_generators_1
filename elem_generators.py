@@ -33,6 +33,9 @@ class CongruentGenerator:
     def __generate_param(self):
         q_list = [8, 16, 32] #, 64]
         q = random.choice(q_list)
+
+        q = 32
+
         st = time.time()
         c0 = random.randint(1000, 10000)
         N = 2 ** q
@@ -56,14 +59,14 @@ class CongruentGenerator:
     def generate_sequence(self, x_0, c_0, a, N, cnt):
         # print(x_0,c_0,a,N, cnt)
         seq = [x_0]
-        st = time.time_ns()
+        st = time.time()
         for i in range(cnt - 1):
             x_0 = (a * x_0 + c_0) % N
             c_0 = int((a * x_0 + c_0) / N)
             seq.append(x_0)
-        end = time.time_ns()
-        # print(st,'\n', end)
-        print("Generator running time (in nsec): {}".format(end - st))
+        time.sleep(5)
+        end = time.time()
+        print("Generator running time (in sec): {}".format(end - st - 5))
         self.__print_seq_to_file(seq)
 
 
@@ -87,15 +90,18 @@ class FibonacciGenerator:
                 exit()
 
     def generate_sequence(self, x: list, r: int, s: int, cnt: int):
-        st = time.time_ns()
+
+        mod = 2 ** 64
+
+        st = time.time()
         for t in range(r, cnt):
-            x_t = x[t - r] * x[t - s]
-            # print(t, "\t", x_t, "\n")
+            x_t = (x[t - r] * x[t - s]) % mod # вариант с ограничением
+            # x_t = x[t - r] * x[t - s] # классический вариант
+            # print(t, "\t", len(str(x_t)), "\n")
             x.append(x_t)
-            if t % 10 == 0:
-                print(t)
-        end = time.time_ns()
-        print("Generator running time (in nsec): {}".format(end - st))
+        time.sleep(5)
+        end = time.time()
+        print("Generator running time (in sec): {}".format(end - st - 5))
         self.__print_seq_to_file(x)
 
 
